@@ -1,0 +1,20 @@
+<ion-view view-title="edit">
+  <div ng-init="edit()">
+    <form name="authorizationForm" ng-submit="submitUpdatedData(authorizationForm)">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" ng-model="authorizationForm.username">
+        </label>
+        <label class="item item-input">
+          <span class="input-label" ng-model ="authorizationForm.password">Password</span>
+          <input type="password" ng-model ="authorizationForm.password">
+        </label>
+      </div>
+
+      <button class="button button-block button-positive activated">Sign In</button>
+
+    </form>
+
+  </di>
+</ion-view>
