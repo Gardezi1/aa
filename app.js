@@ -1,7 +1,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var util = require('util');
+var bodyParser = require('body-parser')
 var app = express();
 var Schema = mongoose.Schema;
+require('node-monkey').start({host: "127.0.0.1", port:"50500"});
 
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -10,6 +13,12 @@ var allowCrossDomain = function(req, res, next) {
 
   next();
 };
+app.use( bodyParser.json() );
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
+// app.use(express.json());       // to support JSON-encoded bodies
+// app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(allowCrossDomain);
 // app.use('/' , require('./index'))
 mongoose.connect('mongodb://localhost:27017/myappdatabase');
@@ -29,6 +38,7 @@ app.get('/getAll' , function(req, res){
       if (err){
         res.send(err);
       }
+      console.log(todos);
       res.json(todos);
     });
 });
@@ -80,17 +90,15 @@ app.get('/update/:obj', function(req , res){
 
 app.post('/addData' , function(req , res){
   console.log("Request Params ");
-  console.log(req.params);
-  // var t = new userSchema(req.params.stickie.a    );
-  // t.save(function(err){
-  //   if(err)
-  //     res.send(err);
-  //   Todo.find({} , function(err , users){
-  //     if(err)
-  //       res.send(err);
-  //     res.json(users);
-  //   });
-  // });
+  console.log(req.body );
+  var p = new Todo({name: req.param('rec').name  , password: req.param('rec').password});
+  p.save(function(err){
+    if(err){
+      res.send(err);
+      console.log(error);
+    }
+    res.json(p);
+  });
 });
 
 
