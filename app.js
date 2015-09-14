@@ -1,4 +1,4 @@
-var express = require('express');
+  var express = require('express');
 var mongoose = require('mongoose');
 var util = require('util');
 var bodyParser = require('body-parser')
@@ -39,14 +39,15 @@ app.get('/getAll' , function(req, res){
         res.send(err);
       }
       console.log(todos);
-      res.json(todos);
+      res.send(todos[0]);
     });
 });
 
-app.get('/delete/:id' , function(req , res){
-  console.log(req.params.id);
+app.get('/delete/:name' , function(req , res){
+  console.log(req.params);
+  console.log(req.params.name);
   Todo.remove({
-            _id : req.params.todo_id
+            name : req.params.name
         }, function(err, todo) {
             if (err)
                 res.send(err);
@@ -89,7 +90,6 @@ app.get('/update/:obj', function(req , res){
 
 
 app.post('/addData' , function(req , res){
-  console.log("Request Params ");
   console.log(req.body );
   var p = new Todo({name: req.param('rec').name  , password: req.param('rec').password});
   p.save(function(err){

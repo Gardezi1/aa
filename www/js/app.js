@@ -25,7 +25,7 @@ angular.module('starter', ['ionic'])
       //  console.log(fromParams);
        if (currentState == 'home')
        {
-         debugger;
+         //debugger;
          //$state.go('edit');
        }
        if (currentState == 'edit')
@@ -53,10 +53,11 @@ angular.module('starter', ['ionic'])
     })
 
     .state('add' , {
-      url:'add',
+      url:'/add',
       templateUrl:'templates/add.html',
       controller:'AppCtrl'
     });
+
 })
 
 .factory('API', function($http) {
@@ -103,13 +104,20 @@ angular.module('starter', ['ionic'])
   //   {name:'Samantha', age:60, gender:'girl'}
   // ];
   //
-  $scope.list = API.getAllRecord();
-  $scope.list1 = $scope.list.$$state;
-  console.log($scope.list);
+  
+  
+  console.log("printing list");
+  // console.log($scope.list);
   // console.log(API.getAllRecord());
 
   $scope.homeOne = function(){
-    debugger;
+    $scope.list = API.getAllRecord();
+    setTimeout(function(){ 
+      $scope.list = $scope.list.$$state.value.data;
+      console.log($scope.list);
+      debugger;
+     }, 5000);
+    //debugger;
   }
 
   $scope.edit = function(){
@@ -121,7 +129,8 @@ angular.module('starter', ['ionic'])
 
   $scope.deleteMe=function(id){
     console.log(id);
-
+    API.deleteRecord(id);
+    debugger;
       $state.go('app');
   }
 
