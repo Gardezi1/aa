@@ -18,21 +18,9 @@ angular.module('starter', ['ionic'])
     $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
       //debugger;
        currentState = toState.name;
-      //  console.log(event);
-      //  console.log(toState);
-      //  console.log(toParams);
-      //  console.log(fromState);
-      //  console.log(fromParams);
-       if (currentState == 'home')
-       {
-         //debugger;
-         //$state.go('edit');
-       }
-       if (currentState == 'edit')
-       {
-        //  $rootScope.tempVar = 1;
-          //$rootScope.edit();
-       }
+
+       if (currentState == 'home'){}
+       if (currentState == 'edit'){}
      });
   });
 })
@@ -74,8 +62,8 @@ angular.module('starter', ['ionic'])
     return $http.get(baseURL +'/delete/' + id );
   };
 
-  api.updateRecord  = function(){
-
+  api.updateRecord  = function(user){
+    $http.post(baseURL + "/update/" ,{rec:user});
   };
 
   api.getAllRecord = function(){
@@ -83,7 +71,7 @@ angular.module('starter', ['ionic'])
   };
 
   api.getOneRecord = function(id){
-
+    return $http.get(baseURL + '/getOne/' + id)
   };
 
   return api;
@@ -104,33 +92,34 @@ angular.module('starter', ['ionic'])
   //   {name:'Samantha', age:60, gender:'girl'}
   // ];
   //
-  
-  
-  console.log("printing list");
-  // console.log($scope.list);
-  // console.log(API.getAllRecord());
+
+
 
   $scope.homeOne = function(){
-    $scope.list = API.getAllRecord();
-    setTimeout(function(){ 
-      $scope.list = $scope.list.$$state.value.data;
-      console.log($scope.list);
+   API.getAllRecord().success(function(res) {
+      console.log(res);
+      $scope.list = res;
       debugger;
-     }, 5000);
-    //debugger;
+    });
   }
 
   $scope.edit = function(){
     // debugger;
     // console.log(id);
+//    debugger;
     $scope.tempVar = $stateParams.name;
+    API.getOneRecord($scope.tempVar).success(function(res){
+      debugger;
+      $scope.user = {id:res._id , name: res.name  , password: res.password};
+      console.log(res);
+    });
     console.log($stateParams);
   }
 
   $scope.deleteMe=function(id){
     console.log(id);
     API.deleteRecord(id);
-    debugger;
+    //debugger;
       $state.go('app');
   }
 
@@ -141,8 +130,11 @@ angular.module('starter', ['ionic'])
     $state.go('app');
   }
 
-  $scope.submitUpdatedData= function(authorizationForm){
-    // $http.post()
+  $scope.submitUpdatedData= function(user){
+    debugger;
+    // $http.post('/url',{params: value}).sucess(function(){
+    API.updateRecord(user);
+  // }).console.error(function(){});
     $state.go('app');
   }
 

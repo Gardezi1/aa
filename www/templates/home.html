@@ -1,19 +1,19 @@
 <ion-view view-title="home">
   <div ng-init="homeOne()">
-  {{list}}
+  <!-- {{list}} -->
 
   <ion-content>
     <ion-list>
       <!-- {{list}} -->
       <ion-item ng-repeat="playlist in list" >
-        {{playlist.name}}
+        <label>{{playlist.name}}</label>
 
         <a ui-sref="edit({name:playlist.name})">Edit</a>
         <a href="" ng-click="deleteMe(playlist.name)">Delete</a>
       </ion-item>
     </ion-list>
     <a ui-sref="add">Add A Record</a>
-  </ion-content> 
-  <a href="">This is a link </a>
+  </ion-content>
+  <!-- <a href="">This is a link </a> -->
 </div>
 </ion-view>

@@ -1,17 +1,17 @@
 <ion-view view-title="edit">
   <div ng-init="edit()">
-    <form name="authorizationForm" ng-submit="submitUpdatedData(authorizationForm)">
+    <form name="user" ng-submit="submitUpdatedData(user)">
       <div class="list">
         <label class="item item-input">
           <span class="input-label">Username</span>
-          <input type="text" ng-model="authorizationForm.username">
+          <input  type="text" ng-model="user.name">
         </label>
         <label class="item item-input">
-          <span class="input-label" ng-model ="authorizationForm.password">Password</span>
-          <input type="password" ng-model ="authorizationForm.password">
+          <span class="input-label" >Password</span>
+          <input type="password" ng-model ="user.password">
         </label>
       </div>
-
+      <label ng-model="user.id" hidden></label>
       <button class="button button-block button-positive activated">Sign In</button>
 
     </form>

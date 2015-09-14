@@ -39,7 +39,7 @@ app.get('/getAll' , function(req, res){
         res.send(err);
       }
       console.log(todos);
-      res.send(todos[0]);
+      res.send(todos);
     });
 });
 
@@ -61,36 +61,37 @@ app.get('/delete/:name' , function(req , res){
 });
 
 app.get('/getOne/:id' , function(req , res){
-  Todo.findOne({_id : req.params.id}, function(err, todo) {
+  Todo.find({name : req.params.id}, function(err, todo) {
             if (err)
                 res.send(err);
-            res.json(todos);
+            res.send  (todo[0]);
             // get and return all the todos after you create another
         });
 });
 
 
-app.get('/update/:obj', function(req , res){
-  Todo.findById(req.params.obj.id , function(err , user){
-    if (err)
-      res.send(err);
-    user = req.obj;
-    user.save(function(err){
-      if (err)
-        res.send(err);
-
-      Todo.find({} , function(err , users){
-        if(err)
-          res.send(err);
-        res.json(users);
-      });
-    });
+app.post('/update', function(req , res){
+  // Todo.find({_id : req.params.id} , function(err , user){
+  //   if (err)
+  //     res.send(err);
+  //   user.name = req.param('rec').name;
+  //   user.password = req.param('rec').password;
+  //   console.log(user);
+  //   user.update(function(err){
+  //     if (err)
+  //       res.send(err);
+  //
+  console.log(req.param('rec').name);
+  Todo.update({_id:req.param('rec').id} , {$set : {name:req.param('rec').name , password:req.param('rec').password}} , function(err){
+    if(err)
+      console.log("Error occured");
   });
 });
 
 
 app.post('/addData' , function(req , res){
-  console.log(req.body );
+  console.log( req.param('rec').name);
+
   var p = new Todo({name: req.param('rec').name  , password: req.param('rec').password});
   p.save(function(err){
     if(err){
