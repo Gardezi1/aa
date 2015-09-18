@@ -40,11 +40,23 @@ angular.module('starter', ['ionic'])
       controller:'AppCtrl'
     })
 
+    .state('done' , {
+      url: 'done',
+      templateUrl:'templates/done.html'
+    })
+
+    .state('delete' , {
+      url:'/delete',
+      templateUrl:'templates/delete.html'
+    })
+
     .state('add' , {
       url:'/add',
       templateUrl:'templates/add.html',
       controller:'AppCtrl'
     });
+
+
 
 })
 
@@ -55,7 +67,7 @@ angular.module('starter', ['ionic'])
   api.addRecord = function(record) {
       console.log(record);
     // $http.post(baseURL + '/addData', {name: record.name}.);
-      return $http.post(baseURL + '/addData', {rec:record});
+      return $http.post(baseURL + '/addData', {rec:record} );
   };
 
   api.deleteRecord = function(id){
@@ -63,7 +75,7 @@ angular.module('starter', ['ionic'])
   };
 
   api.updateRecord  = function(user){
-    $http.post(baseURL + "/update/" ,{rec:user});
+    return $http.post(baseURL + "/update" ,{rec:user} );
   };
 
   api.getAllRecord = function(){
@@ -78,64 +90,43 @@ angular.module('starter', ['ionic'])
 })
 
 .controller('AppCtrl' , function($scope , $stateParams , $state , API){
-
-  // $scope.list=[
-  //   {name:'John', age:25, gender:'boy'},
-  //   {name:'Jessie', age:30, gender:'girl'},
-  //   {name:'Johanna', age:28, gender:'girl'},
-  //   {name:'Joy', age:15, gender:'girl'},
-  //   {name:'Mary', age:28, gender:'girl'},
-  //   {name:'Peter', age:95, gender:'boy'},
-  //   {name:'Sebastian', age:50, gender:'boy'},
-  //   {name:'Erika', age:27, gender:'girl'},
-  //   {name:'Patrick', age:40, gender:'boy'},
-  //   {name:'Samantha', age:60, gender:'girl'}
-  // ];
-  //
-
-
-
   $scope.homeOne = function(){
    API.getAllRecord().success(function(res) {
-      console.log(res);
+      // console.log(res);
       $scope.list = res;
       debugger;
     });
   }
 
   $scope.edit = function(){
-    // debugger;
-    // console.log(id);
-//    debugger;
     $scope.tempVar = $stateParams.name;
     API.getOneRecord($scope.tempVar).success(function(res){
       debugger;
       $scope.user = {id:res._id , name: res.name  , password: res.password};
-      console.log(res);
+      // console.log(res);
     });
     console.log($stateParams);
   }
 
   $scope.deleteMe=function(id){
     console.log(id);
-    API.deleteRecord(id);
-    //debugger;
-      $state.go('app');
+    API.deleteRecord(id).then(function(res){
+       $state.transitionTo('delete' ,{} , {reload: true });
+    });
   }
 
   $scope.submitData = function(formData){
-    // debugger;
     var a = {name: formData.username  , password: formData.password};
-    API.addRecord(a);
-    $state.go('app');
+    API.addRecord(a).then(function(res){
+       $state.transitionTo('done' ,{} , {reload: true });
+    });
   }
 
   $scope.submitUpdatedData= function(user){
-    debugger;
-    // $http.post('/url',{params: value}).sucess(function(){
-    API.updateRecord(user);
-  // }).console.error(function(){});
-    $state.go('app');
+    // debugger;
+    API.updateRecord(user).then(function(res){
+       $state.transitionTo('done' ,{} , {reload: true });
+    });
   }
 
 });

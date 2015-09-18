@@ -71,20 +71,11 @@ app.get('/getOne/:id' , function(req , res){
 
 
 app.post('/update', function(req , res){
-  // Todo.find({_id : req.params.id} , function(err , user){
-  //   if (err)
-  //     res.send(err);
-  //   user.name = req.param('rec').name;
-  //   user.password = req.param('rec').password;
-  //   console.log(user);
-  //   user.update(function(err){
-  //     if (err)
-  //       res.send(err);
-  //
   console.log(req.param('rec').name);
   Todo.update({_id:req.param('rec').id} , {$set : {name:req.param('rec').name , password:req.param('rec').password}} , function(err){
     if(err)
-      console.log("Error occured");
+      res.send("Error occured");
+    res.send("true");
   });
 });
 
