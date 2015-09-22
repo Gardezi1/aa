@@ -29,7 +29,7 @@ angular.module('starter', ['ionic'])
   $stateProvider
 
     .state('app' , {
-      url: '/',
+      url: '/home',
       templateUrl:'templates/home.html',
       controller:'AppCtrl'
     })
@@ -50,14 +50,23 @@ angular.module('starter', ['ionic'])
       templateUrl:'templates/delete.html'
     })
 
+    .state('authenticate' , {
+      url: '/' ,
+      templateUrl: 'templates/authentication.html',
+      controller: 'AppCtrl'
+    })
+
+    .state('siginIn' , {
+      url: '/signIn' ,
+      templateUrl: 'templates/signIn.html',
+      controller: 'AppCtrl'
+    })
+
     .state('add' , {
       url:'/add',
       templateUrl:'templates/add.html',
       controller:'AppCtrl'
     });
-
-
-
 })
 
 .factory('API', function($http) {
@@ -83,7 +92,19 @@ angular.module('starter', ['ionic'])
   };
 
   api.getOneRecord = function(id){
-    return $http.get(baseURL + '/getOne/' + id)
+    return $http.get(baseURL + '/getOne/' + id);
+  };
+
+  api.signUp = function(user){
+    return  $http.post(baseURL + '/signUp' , {rec :user});
+  };
+
+  api.signIn = function(user){
+      $http.post(baseURL + '/signIn' , {username :user.username , password:user.password}).then(function(response){
+          debugger;
+      } , function(response){
+          debugger;
+      });
   };
 
   return api;
@@ -119,6 +140,19 @@ angular.module('starter', ['ionic'])
     var a = {name: formData.username  , password: formData.password};
     API.addRecord(a).then(function(res){
        $state.transitionTo('done' ,{} , {reload: true });
+    });
+  }
+
+  $scope.signup = function(data){
+    API.signUp(data).then(function(res){
+      $state.transitionTo('app' ,{} , {reload: true });
+    });
+  }
+
+  $scope.signIn = function(data){
+    debugger;
+    API.signIn(data).then(function(res){
+        debugger;
     });
   }
 

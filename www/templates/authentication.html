@@ -1,0 +1,23 @@
+<ion-view view-title="authentication">
+  <ion-content>
+    <form name="signUp" ng-submit="signup(signUp)">
+      <div class="bar bar-header">
+        <div class="h1 title"><a href="">Let's Record Data</a></div>
+      </div>
+      <div class="content has-header">
+        <div class="list">
+          <label class="item item-input">
+            <span class="input-label">Email</span>
+            <input type="text" ng-model="signUp.username">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Password</span>
+            <input type="password" ng-model ="signUp.password">
+          </label>
+        </div>
+
+        <button class="button button-block button-positive activated">Add</button>
+      </div>
+    </form>
+  </ion-content>
+</ion-view>

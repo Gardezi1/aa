@@ -1,9 +1,12 @@
-  var express = require('express');
+var express = require('express');
 var mongoose = require('mongoose');
 var util = require('util');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var passport = require('passport');
 var app = express();
 var Schema = mongoose.Schema;
+var passport = require('passport');
+LocalStrategy = require('passport-local').Strategy,
 require('node-monkey').start({host: "127.0.0.1", port:"50500"});
 
 var allowCrossDomain = function(req, res, next) {
@@ -29,9 +32,14 @@ var userSchema = new Schema({
 });
 
 
+var userTable =  new Schema({
+  email: String,
+  password: String
+});
+
 
 var Todo = mongoose.model('Todo', userSchema);
-
+var User = mongoose.model('User' , userTable);
 
 app.get('/getAll' , function(req, res){
     Todo.find({} , function(err , todos){
@@ -41,6 +49,25 @@ app.get('/getAll' , function(req, res){
       console.log(todos);
       res.send(todos);
     });
+});
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    debugger;
+    console.log("asdasd");
+    User.find({ email: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+    return done(null , false);
+  }
+));
+
+app.get('/login', passport.authenticate('local') , function(req, res) {
+  console.log("I am in this");
+      res.send(req.user);
 });
 
 app.get('/delete/:name' , function(req , res){
@@ -76,6 +103,16 @@ app.post('/update', function(req , res){
     if(err)
       res.send("Error occured");
     res.send("true");
+  });
+});
+
+app.post('/signUp' , function(req , res){
+  var p = new User ({email : req.param('rec').username  , password: req.param('rec').password});
+  p.save(function(err){
+    if(err){
+      res.send(err)
+    }
+    res.send(p);
   });
 });
 
