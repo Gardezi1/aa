@@ -2,10 +2,12 @@ var express = require('express');
 var mongoose = require('mongoose');
 var util = require('util');
 var bodyParser = require('body-parser');
-var passport = require('passport');
+// var morgan       = require('morgan');
+var cookieParser = require('cookie-parser');
 var app = express();
 var Schema = mongoose.Schema;
 var passport = require('passport');
+ app.use(passport.initialize());
 LocalStrategy = require('passport-local').Strategy,
 require('node-monkey').start({host: "127.0.0.1", port:"50500"});
 
@@ -54,25 +56,29 @@ app.get('/getAll' , function(req, res){
 passport.use(new LocalStrategy(
   function(username, password, done) {
     debugger;
-    console.log("asdasd");
+    // console.log("asdasd");
     User.find({ email: username }, function (err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      if (!user.verifyPassword(password)) { return done(null, false); }
+      if (!isValidPassword(user , password)) { return done(null, false); }
       return done(null, user);
     });
     return done(null , false);
   }
 ));
 
-app.get('/login', passport.authenticate('local') , function(req, res) {
+var isValidPassword = function(user, password){
+  return true;
+}
+
+app.post('/login',
+passport.authenticate('local') ,
+function(req, res) {
   console.log("I am in this");
       res.send(req.user);
 });
 
 app.get('/delete/:name' , function(req , res){
-  console.log(req.params);
-  console.log(req.params.name);
   Todo.remove({
             name : req.params.name
         }, function(err, todo) {
@@ -100,8 +106,11 @@ app.get('/getOne/:id' , function(req , res){
 app.post('/update', function(req , res){
   console.log(req.param('rec').name);
   Todo.update({_id:req.param('rec').id} , {$set : {name:req.param('rec').name , password:req.param('rec').password}} , function(err){
-    if(err)
+    if(err){
       res.send("Error occured");
+      console.log("Not Updated")
+    };
+    console.log("Updated");
     res.send("true");
   });
 });

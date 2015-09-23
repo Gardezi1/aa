@@ -157,7 +157,7 @@ angular.module('starter', ['ionic'])
   }
 
   $scope.submitUpdatedData= function(user){
-    // debugger;
+    debugger;
     API.updateRecord(user).then(function(res){
        $state.transitionTo('done' ,{} , {reload: true });
     });
