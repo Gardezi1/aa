@@ -77,7 +77,7 @@ passport.use(new LocalStrategy(
       return done(null, user);
       console.log("sendt");
     });
-    return done(null , false);
+    // return done(null , false);
   }
 ));
 
@@ -89,7 +89,7 @@ app.post('/login',
 passport.authenticate('local' ) ,
 function(req, res) {
   console.log("Back");
-    return  res.send(req.user[0]);
+    res.send(req.user[0]);
 });
 
 // app.get('/login', function(req, res, next) {
