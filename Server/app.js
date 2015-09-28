@@ -2,14 +2,28 @@ var express = require('express');
 var mongoose = require('mongoose');
 var util = require('util');
 var bodyParser = require('body-parser');
-// var morgan       = require('morgan');
+var path = require('path');
+var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
 var app = express();
 var Schema = mongoose.Schema;
 var passport = require('passport');
- app.use(passport.initialize());
-LocalStrategy = require('passport-local').Strategy,
+var LocalStrategy = require('passport-local').Strategy;
 require('node-monkey').start({host: "127.0.0.1", port:"50500"});
+
+
+app.use( bodyParser.json());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: false
+}));
+app.use(cookieParser());
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -18,10 +32,8 @@ var allowCrossDomain = function(req, res, next) {
 
   next();
 };
-app.use( bodyParser.json() );
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
+
+
 // app.use(express.json());       // to support JSON-encoded bodies
 // app.use(express.urlencoded()); // to support URL-encoded bodies
 app.use(allowCrossDomain);
@@ -55,13 +67,15 @@ app.get('/getAll' , function(req, res){
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    debugger;
-    // console.log("asdasd");
+    console.log("New Local Strategy");
     User.find({ email: username }, function (err, user) {
+      console.log(user[0]._doc);
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      if (!isValidPassword(user , password)) { return done(null, false); }
+      if (user[0]._doc.password != password) { return done(null, false); }
+      console.log("sending");
       return done(null, user);
+      console.log("sendt");
     });
     return done(null , false);
   }
@@ -72,10 +86,34 @@ var isValidPassword = function(user, password){
 }
 
 app.post('/login',
-passport.authenticate('local') ,
+passport.authenticate('local' ) ,
 function(req, res) {
-  console.log("I am in this");
-      res.send(req.user);
+  console.log("Back");
+    return  res.send(req.user[0]);
+});
+
+// app.get('/login', function(req, res, next) {
+//   passport.authenticate('local', function(err, user, info) {
+//     if (err) { return next(err); }
+//     if (!user) { return res.redirect('/login'); }
+//     console.log("Back 1");
+//     req.logIn(user, function(err) {
+//       if (err) { return next(err); }
+//         console.log("Back 2");
+//       return res.send(req.user[0]);
+//     });
+//   })(req, res, next);
+// });
+
+
+passport.serializeUser(function(user, done) {
+  console.log("Serialize User");
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  console.log("De Serialize User");
+  done(null, user);
 });
 
 app.get('/delete/:name' , function(req , res){
