@@ -69,7 +69,6 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("New Local Strategy");
     User.find({ email: username }, function (err, user) {
-      console.log(user[0]._doc);
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       if (user[0]._doc.password != password) { return done(null, false); }
@@ -92,19 +91,11 @@ function(req, res) {
     res.send(req.user[0]);
 });
 
-// app.get('/login', function(req, res, next) {
-//   passport.authenticate('local', function(err, user, info) {
-//     if (err) { return next(err); }
-//     if (!user) { return res.redirect('/login'); }
-//     console.log("Back 1");
-//     req.logIn(user, function(err) {
-//       if (err) { return next(err); }
-//         console.log("Back 2");
-//       return res.send(req.user[0]);
-//     });
-//   })(req, res, next);
-// });
+app.get('/logout', function(req, res){
 
+  req.logout();
+  res.send("true");
+});
 
 passport.serializeUser(function(user, done) {
   console.log("Serialize User");

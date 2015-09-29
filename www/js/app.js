@@ -51,13 +51,13 @@ angular.module('starter', ['ionic'])
     })
 
     .state('authenticate' , {
-      url: '/' ,
+      url: '/signUp' ,
       templateUrl: 'templates/authentication.html',
       controller: 'AppCtrl'
     })
 
     .state('siginIn' , {
-      url: '/signIn' ,
+      url: '/' ,
       templateUrl: 'templates/signIn.html',
       controller: 'AppCtrl'
     })
@@ -100,11 +100,11 @@ angular.module('starter', ['ionic'])
   };
 
   api.signIn = function(user){
-      $http.post(baseURL + '/signIn' , {username :user.username , password:user.password}).then(function(response){
-          debugger;
-      } , function(response){
-          debugger;
-      });
+      return $http.post(baseURL + '/login' , {username :user.username , password:user.password});
+  };
+
+  api.signOut = function(user){
+      return $http.get(baseURL + '/logout');
   };
 
   return api;
@@ -152,7 +152,9 @@ angular.module('starter', ['ionic'])
   $scope.signIn = function(data){
     debugger;
     API.signIn(data).then(function(res){
-        debugger;
+        $state.transitionTo('app' ,{} , {reload: true });
+    } , function(res){
+      debugger;
     });
   }
 
@@ -160,6 +162,13 @@ angular.module('starter', ['ionic'])
     debugger;
     API.updateRecord(user).then(function(res){
        $state.transitionTo('done' ,{} , {reload: true });
+    });
+  }
+
+  $scope.signout = function(){
+    debugger;
+    API.signOut().then(function(res){
+      $state.transitionTo('signIn' ,{} , {reload: true });
     });
   }
 
