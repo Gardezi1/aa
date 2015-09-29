@@ -69,10 +69,11 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     console.log("New Local Strategy");
     User.find({ email: username }, function (err, user) {
+      console.log(user);
       if (err) { return done(err); }
-      if (!user) { return done(null, false); }
+      if (!user[0]) { return done(null, false); }
       if (user[0]._doc.password != password) { return done(null, false); }
-      console.log("sending");
+      console.log("sending" );
       return done(null, user);
       console.log("sendt");
     });
